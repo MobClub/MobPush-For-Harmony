@@ -35,27 +35,27 @@ struct Index {
           .margin(10)
           .padding(15)
 
-        Button("申请OAID权限")
-          .onClick(() => {
-            let atManager = abilityAccessCtrl.createAtManager();
-            try {
-              let context: Context = getContext(this) as common.UIAbilityContext;
-              atManager.requestPermissionsFromUser(context, ["ohos.permission.APP_TRACKING_CONSENT"]).then((data) => {
-                console.info("data:" + JSON.stringify(data));
-                console.info("data permissions:" + data.permissions);
-                console.info("data authResults:" + data.authResults);
-              }).catch((err: BusinessError) => {
-                console.info("data:" + JSON.stringify(err));
-              })
-            } catch (err) {
-              console.log(`catch err->${JSON.stringify(err)}`);
-            }
-          })
-          .width('90%')
-          .margin(10)
-          .padding(15)
+        // Button("申请OAID权限")
+        //   .onClick(() => {
+        //     let atManager = abilityAccessCtrl.createAtManager();
+        //     try {
+        //       let context: Context = getContext(this) as common.UIAbilityContext;
+        //       atManager.requestPermissionsFromUser(context, ["ohos.permission.APP_TRACKING_CONSENT"]).then((data) => {
+        //         console.info("data:" + JSON.stringify(data));
+        //         console.info("data permissions:" + data.permissions);
+        //         console.info("data authResults:" + data.authResults);
+        //       }).catch((err: BusinessError) => {
+        //         console.info("data:" + JSON.stringify(err));
+        //       })
+        //     } catch (err) {
+        //       console.log(`catch err->${JSON.stringify(err)}`);
+        //     }
+        //   })
+        //   .width('90%')
+        //   .margin(10)
+        //   .padding(15)
 
-        Button("同意隐私")
+        Button("MobSDK同意隐私")
           .fontWeight(FontWeight.Bold)
           .onClick(() => {
             MobSDK.submitPolicyGrantResult(true)
@@ -64,7 +64,7 @@ struct Index {
           .margin(10)
           .padding(15)
 
-        Button("拒绝隐私")
+        Button("MobSDK拒绝隐私")
           .fontWeight(FontWeight.Bold)
           .onClick(() => {
             MobSDK.submitPolicyGrantResult(false)
@@ -73,7 +73,7 @@ struct Index {
           .margin(10)
           .padding(15)
 
-        Button("公共库初始化")
+        Button("MobSDK初始化")
           .fontWeight(FontWeight.Bold)
           .onClick(() => {
             MobSDK.init(getContext(), "2dbe655e88c80", "a7b9f1918c596eacbff8a172ba8ed158")
@@ -82,7 +82,7 @@ struct Index {
           .margin(10)
           .padding(15)
 
-        Button("Push初始化")
+        Button("MobPush初始化")
           .fontWeight(FontWeight.Bold)
           .onClick(() => {
             notificationManager.isNotificationEnabled().then((isNotificationEnabled) => {
