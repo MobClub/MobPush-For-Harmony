@@ -39,6 +39,21 @@
         "name": "client_id",
         "value": "110573473"
       }
+    ],
+    "requestPermissions": [
+      {
+        "name": "ohos.permission.GET_NETWORK_INFO"
+      },
+      {
+        "name": "ohos.permission.INTERNET"
+      },
+      {
+        "reason": "$string:demoReqPermission",
+        "usedScene": {
+          "when": "always"
+        },
+        "name": "ohos.permission.APP_TRACKING_CONSENT"
+      }
     ]
   }
 }

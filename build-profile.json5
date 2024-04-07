@@ -1,20 +1,6 @@
 {
   "app": {
-    "signingConfigs": [
-      {
-        "name": "default",
-        "type": "HarmonyOS",
-        "material": {
-          "certpath": "/Users/yanyuhang/.ohos/config/default_MobPush-HOS-Demo_mFGNcYNFSoE2h_TCYDh2fzVp42kUUle0NbhoRRYFAds=.cer",
-          "storePassword": "0000001A5B0737A0DA039FEDD9B30774B14A003FB19CE48366FD1BD43B266DDDE40E5D4E9E441F58EAF4",
-          "keyAlias": "debugKey",
-          "keyPassword": "0000001AFAA0B6D8BE8C4B033B152BFB72C8AB09BBE534176005F96212B0659B0FA8108302EF34C0523A",
-          "profile": "/Users/yanyuhang/.ohos/config/default_MobPush-HOS-Demo_mFGNcYNFSoE2h_TCYDh2fzVp42kUUle0NbhoRRYFAds=.p7b",
-          "signAlg": "SHA256withECDSA",
-          "storeFile": "/Users/yanyuhang/.ohos/config/default_MobPush-HOS-Demo_mFGNcYNFSoE2h_TCYDh2fzVp42kUUle0NbhoRRYFAds=.p12"
-        }
-      }
-    ],
+    "signingConfigs": [],
     "products": [
       {
         "name": "default",

@@ -35,25 +35,26 @@ struct Index {
           .margin(10)
           .padding(15)
 
-        // Button("申请OAID权限")
-        //   .onClick(() => {
-        //     let atManager = abilityAccessCtrl.createAtManager();
-        //     try {
-        //       let context: Context = getContext(this) as common.UIAbilityContext;
-        //       atManager.requestPermissionsFromUser(context, ["ohos.permission.APP_TRACKING_CONSENT"]).then((data) => {
-        //         console.info("data:" + JSON.stringify(data));
-        //         console.info("data permissions:" + data.permissions);
-        //         console.info("data authResults:" + data.authResults);
-        //       }).catch((err: BusinessError) => {
-        //         console.info("data:" + JSON.stringify(err));
-        //       })
-        //     } catch (err) {
-        //       console.log(`catch err->${JSON.stringify(err)}`);
-        //     }
-        //   })
-        //   .width('90%')
-        //   .margin(10)
-        //   .padding(15)
+        //用于产生设备ID
+        Button("获取开放匿名设备标识符权限")
+          .onClick(() => {
+            let atManager = abilityAccessCtrl.createAtManager();
+            try {
+              let context: Context = getContext(this) as common.UIAbilityContext;
+              atManager.requestPermissionsFromUser(context, ["ohos.permission.APP_TRACKING_CONSENT"]).then((data) => {
+                console.info("data:" + JSON.stringify(data));
+                console.info("data permissions:" + data.permissions);
+                console.info("data authResults:" + data.authResults);
+              }).catch((err: BusinessError) => {
+                console.info("data:" + JSON.stringify(err));
+              })
+            } catch (err) {
+              console.log(`catch err->${JSON.stringify(err)}`);
+            }
+          })
+          .width('90%')
+          .margin(10)
+          .padding(15)
 
         Button("MobSDK同意隐私")
           .fontWeight(FontWeight.Bold)
