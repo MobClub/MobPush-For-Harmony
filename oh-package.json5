@@ -7,7 +7,6 @@
   "license": "",
   "dependencies": {
     "@yyz116/jsbn": "^1.0.1",
-    "@mobsdk/mobpush": "^1.0.0",
     "@mobsdk/mobcore": "^1.0.0",
   },
   "devDependencies": {
