@@ -1,25 +1,30 @@
-import mobPush from '@mobsdk/mobpush';
+import mobPush from '@zztsdk/mobpush';
 import promptAction from '@ohos.promptAction';
 import Base from '@ohos.base';
 import notificationManager from '@ohos.notificationManager';
-import { MobSDK } from '@mobsdk/mobcore';
-import { common } from '@kit.AbilityKit';
+import { ZztSDK } from '@zztsdk/zztcore';
+import { common, Want } from '@kit.AbilityKit';
 import abilityAccessCtrl from '@ohos.abilityAccessCtrl';
 import { BusinessError } from '@ohos.base';
 
 @Entry
 @Component
 struct Index {
-  setAlias1: string = ""
-  setAlias2: string = ""
-  addTags1: string = ""
-  addTags2: string = ""
-  deleteTags1: string = ""
-  deleteTags2: string = ""
-  badgeCount: number = 0
+  message: string = 'Hello World';
+  scroller: Scroller = new Scroller()
+  ctx = getContext(this) as common.ApplicationContext;
+  @State setAlias1: string = ""
+  @State setAlias2: string = ""
+  @State addTags1: string = ""
+  @State addTags2: string = ""
+  @State deleteTags1: string = ""
+  @State deleteTags2: string = ""
+  @State badgeCount: number = 0
+  @State geofenceId: string = ""
+  @State usLanguage: string = ""
 
   build() {
-    Scroll() {
+    Scroll(this.scroller) {
       Column() {
         Text("PushSDK DEMO")
           .width('100%')
@@ -56,34 +61,55 @@ struct Index {
           .margin(10)
           .padding(15)
 
-        Button("MobSDK同意隐私")
-          .fontWeight(FontWeight.Bold)
+        Button("申请定位权限")
           .onClick(() => {
-            MobSDK.submitPolicyGrantResult(true)
+            let atManager = abilityAccessCtrl.createAtManager();
+            try {
+              let context: Context = getContext(this) as common.UIAbilityContext;
+              atManager.requestPermissionsFromUser(context,
+                ['ohos.permission.LOCATION', 'ohos.permission.APPROXIMATELY_LOCATION']).then((data) => {
+                console.info("data:" + JSON.stringify(data));
+                console.info("data permissions:" + data.permissions);
+                console.info("data authResults:" + data.authResults);
+              }).catch((err: BusinessError) => {
+                console.info("data:" + JSON.stringify(err));
+              })
+            } catch (err) {
+              console.log(`catch err->${JSON.stringify(err)}`);
+            }
           })
           .width('90%')
           .margin(10)
           .padding(15)
 
-        Button("MobSDK拒绝隐私")
+        Button("ZztSDK初始化")
           .fontWeight(FontWeight.Bold)
           .onClick(() => {
-            MobSDK.submitPolicyGrantResult(false)
+            ZztSDK.init(this.ctx, "2dbe655e88c80", "a7b9f1918c596eacbff8a172ba8ed158")
           })
           .width('90%')
           .margin(10)
           .padding(15)
 
-        Button("MobSDK初始化")
+        Button("同意隐私")
           .fontWeight(FontWeight.Bold)
           .onClick(() => {
-            MobSDK.init(getContext(), "2dbe655e88c80", "a7b9f1918c596eacbff8a172ba8ed158")
+            ZztSDK.submitPolicyGrantResult(true)
           })
           .width('90%')
           .margin(10)
           .padding(15)
 
-        Button("MobPush初始化")
+        Button("拒绝隐私")
+          .fontWeight(FontWeight.Bold)
+          .onClick(() => {
+            ZztSDK.submitPolicyGrantResult(false)
+          })
+          .width('90%')
+          .margin(10)
+          .padding(15)
+
+        Button("Push初始化")
           .fontWeight(FontWeight.Bold)
           .onClick(() => {
             notificationManager.isNotificationEnabled().then((isNotificationEnabled) => {
@@ -100,13 +126,12 @@ struct Index {
         Button("通知权限是否开启-callback")
           .onClick(() => {
             let isNotificationEnabledCallback = (err: Base.BusinessError, data: boolean): void => {
-              let message = ""
               if (err) {
-                message = `获取通知权限是否开启失败, code is ${err.code}, message is ${err.message}`;
+                this.message = `获取通知权限是否开启失败, code is ${err.code}, message is ${err.message}`;
               } else {
-                message = `通知权限是否开启: ${JSON.stringify(data)}`;
+                this.message = `通知权限是否开启: ${JSON.stringify(data)}`;
               }
-              this.showMessage(message)
+              this.showMessage(this.message)
             }
             mobPush.isNotificationEnabled(isNotificationEnabledCallback)
           }).width('90%')
@@ -125,13 +150,12 @@ struct Index {
         Button("获取RID-callback")
           .onClick(() => {
             let getRegistrationIdCallback = (err: Base.BusinessError, data: string): void => {
-              let message = ""
               if (err) {
-                message = `获取RID失败, code is ${err.code}, message is ${err.message}`;
+                this.message = `获取RID失败, code is ${err.code}, message is ${err.message}`;
               } else {
-                message = `RID: ${JSON.stringify(data)}`;
+                this.message = `RID: ${JSON.stringify(data)}`;
               }
-              this.showMessage(message)
+              this.showMessage(this.message)
             }
             mobPush.getRegistrationId(getRegistrationIdCallback)
           }).width('90%')
@@ -161,10 +185,21 @@ struct Index {
           .margin(10)
           .padding(15)
 
-        Button("isPushStopped")
+        Button("isPushStopped-callback")
           .onClick(() => {
-            let isStopped = mobPush.isPushStopped()
-            this.showMessage("isStopped:" + isStopped)
+            let callback = (err: Base.BusinessError, isStopped: boolean): void => {
+              this.showMessage("isStopped:" + isStopped)
+            }
+            mobPush.isPushStoppedAsync(callback)
+          }).width('90%')
+          .margin(10)
+          .padding(15)
+
+        Button("isPushStopped-Promise")
+          .onClick(() => {
+            mobPush.isPushStoppedAsync().then((isStopped) => {
+              this.showMessage("isStopped:" + isStopped)
+            })
           }).width('90%')
           .margin(10)
           .padding(15)
@@ -373,9 +408,21 @@ struct Index {
           .width('90%')
           .margin(10)
           .padding(15)
-        Button("获取角标是否显示")
+        Button("获取角标是否显示-callback")
           .onClick(() => {
-            this.showMessage("角标显示：" + mobPush.getShowBadge())
+            let callback = (err: Base.BusinessError, isShow: boolean) => {
+              this.showMessage("角标显示：" + isShow)
+            }
+            mobPush.getShowBadgeAsync(callback)
+          })
+          .width('90%')
+          .margin(10)
+          .padding(15)
+        Button("获取角标是否显示-Promiss")
+          .onClick(() => {
+            mobPush.getShowBadgeAsync().then((isShow) => {
+              this.showMessage("角标显示：" + isShow)
+            })
           })
           .width('90%')
           .margin(10)
@@ -401,9 +448,22 @@ struct Index {
           .width('90%')
           .margin(10)
           .padding(15)
-        Button("获取厂商Token")
+        Button("获取厂商Token-callback")
           .onClick(() => {
-            this.showMessage("厂商Toke:" + mobPush.getDeviceToken())
+            let callback = (err: Base.BusinessError, token: string) => {
+              this.showMessage("厂商Token:" + token)
+            }
+            mobPush.getDeviceTokenAsync(callback)
+          })
+          .width('90%')
+          .margin(10)
+          .padding(15)
+
+        Button("获取厂商Token-Promise")
+          .onClick(() => {
+            mobPush.getDeviceTokenAsync().then((token) => {
+              this.showMessage("厂商Token:" + token)
+            })
           })
           .width('90%')
           .margin(10)
@@ -412,8 +472,8 @@ struct Index {
         Button("获取TCP状态-callback")
           .onClick(() => {
             let isNotificationEnabledCallback = (data: boolean): void => {
-              let message = `TCP状态: ${JSON.stringify(data)}`;
-              this.showMessage(message)
+              this.message = `TCP状态: ${JSON.stringify(data)}`;
+              this.showMessage(this.message)
             }
             mobPush.checkTcpStatus(isNotificationEnabledCallback)
           }).width('90%')
@@ -428,6 +488,68 @@ struct Index {
           }).width('90%')
           .margin(10)
           .padding(15)
+
+        Button("打开地理围栏")
+          .onClick(() => {
+            mobPush.setGeofenceStatus(true)
+          }).width('90%')
+          .margin(10)
+          .padding(15)
+
+        Button("关闭地理围栏")
+          .onClick(() => {
+            mobPush.setGeofenceStatus(false)
+          }).width('90%')
+          .margin(10)
+          .padding(15)
+
+
+        Button("获取地理围栏状态-callback")
+          .onClick(() => {
+            mobPush.getGeofenceStatus((isopen: boolean) => {
+              this.showMessage("GeofenceStatus:" + isopen)
+            })
+          }).width('90%')
+          .margin(10)
+          .padding(15)
+
+
+        Button("获取地理围栏状态-promise")
+          .onClick(() => {
+            mobPush.getGeofenceStatus().then((isopen) => {
+              this.showMessage("GeofenceStatus:" + isopen)
+            })
+          }).width('90%')
+          .margin(10)
+          .padding(15)
+
+        Row({ space: 5 }) {
+          TextArea({
+            placeholder: '输入围栏id',
+          }).type(TextAreaType.NUMBER)
+            .onChange((value: string) => {
+              this.geofenceId = value
+            }).width('50%')
+          Button("删除监听地理围栏")
+            .onClick(() => {
+              console.log("删除监听地理围栏:" + this.geofenceId)
+              mobPush.deleteGeofence(this.geofenceId)
+            }).width('50%')
+        }.width('90%')
+        .margin(10)
+
+        Row({ space: 5 }) {
+          TextArea({
+            placeholder: '输入通知语言',
+          }).type(TextAreaType.NORMAL)
+            .onChange((value: string) => {
+              this.usLanguage = value
+            }).width('50%')
+          Button("设置通知语言")
+            .onClick(() => {
+              mobPush.setUserLanguage(this.usLanguage)
+            }).width('50%')
+        }.width('90%')
       }
       .width('100%')
     }
@@ -436,7 +558,6 @@ struct Index {
   }
 
   showMessage(message: string) {
-    console.log(message)
     promptAction.showToast({
       message: message,
       duration: 2000
