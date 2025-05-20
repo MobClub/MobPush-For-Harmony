@@ -3,17 +3,22 @@ import hilog from '@ohos.hilog';
 import UIAbility from '@ohos.app.ability.UIAbility';
 import Want from '@ohos.app.ability.Want';
 import window from '@ohos.window';
-import mobPush from '@mobsdk/mobpush';
+import mobPush from '@zztsdk/mobpush';
 
 export default class EntryAbility extends UIAbility {
   onCreate(want: Want, launchParam: AbilityConstant.LaunchParam): void {
     hilog.info(0x0000, 'testTag', '%{public}s', 'Ability onCreate');
     console.log("EntryAbility onCreate")
     mobPush.notificationClickAck(want)
+    mobPush.receiveMessage(this)
     if (want) {
       if (want.parameters) {
+        console.log("parameters:" + JSON.stringify(want.parameters))
         if (want.parameters["pushData"]) {
           console.log("pushData:" + JSON.stringify((want.parameters["pushData"])))
+        }
+        if (want.parameters["schemeData"]) {
+          console.log("schemeData:" + JSON.stringify((want.parameters["schemeData"])))
         }
       }
     }
@@ -58,6 +63,9 @@ export default class EntryAbility extends UIAbility {
       if (want.parameters) {
         if (want.parameters["pushData"]) {
           console.log("pushData:" + JSON.stringify((want.parameters["pushData"])))
+        }
+        if (want.parameters["schemeData"]) {
+          console.log("schemeData:" + JSON.stringify((want.parameters["schemeData"])))
         }
       }
     }

@@ -15,6 +15,14 @@
     {
       "name": "demoReqPermission",
       "value": "获取开放匿名设备标识符，用于产生设备ID"
+    },
+    {
+      "name": "EntryAbility1_desc",
+      "value": "description"
+    },
+    {
+      "name": "EntryAbility1_label",
+      "value": "label"
     }
   ]
 }
